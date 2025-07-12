@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My GPT Chatbot</title>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
+    #chat { max-width: 600px; margin: auto; background: white; padding: 15px; border-radius: 10px; }
+    .bubble { padding: 10px; margin: 8px 0; border-radius: 8px; }
+    .user { background: #d1e7dd; text-align: right; }
+    .bot { background: #f8d7da; text-align: left; }
+    #input-box { width: 80%; padding: 10px; }
+    button { padding: 10px 15px; }
+  </style>
+</head>
+<body>
+  <div id="chat">
+    <div class="bubble bot">Hi! I'm your AI assistant. How can I help you today?</div>
+  </div>
+  <input type="text" id="input-box" placeholder="Type your message..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    async function sendMessage() {
+      const inputBox = document.getElementById("input-box");
+      const message = inputBox.value;
+      if (!message) return;
+
+      const chat = document.getElementById("chat");
+      chat.innerHTML += `<div class="bubble user">${message}</div>`;
+      inputBox.value = "";
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await res.json();
+      chat.innerHTML += `<div class="bubble bot">${data.response}</div>`;
+    }
+  </script>
+</body>
+</html>
